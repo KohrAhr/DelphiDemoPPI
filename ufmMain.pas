@@ -8,7 +8,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Tabs, Vcl.ComCtrls, Vcl.ExtCtrls;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Tabs, Vcl.ComCtrls, Vcl.ExtCtrls,
+  Vcl.Imaging.jpeg;
 
 type
   TfmMain = class(TForm)
@@ -32,11 +33,13 @@ type
     btnApply: TButton;
     Image2: TImage;
     Image4: TImage;
+    btnLoadAndApplySettings: TButton;
     procedure FormCreate(Sender: TObject);
     procedure btnReadClick(Sender: TObject);
     procedure TrackBar2Change(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
+    procedure btnLoadAndApplySettingsClick(Sender: TObject);
   private
 		{ Private declarations }
 	public
@@ -60,25 +63,12 @@ begin
 	ReadPPI;
 end;
 
-procedure TfmMain.btnApplyClick(Sender: TObject);
-begin
-	if TrackBar2.Position = ScaleHelper.PPI then
-		Exit;
-
-	Application.MainForm.PixelsPerInch := TrackBar2.Position;
-	ScaleHelper.PPI := TrackBar2.Position;
-end;
-
-procedure TfmMain.FormCreate(Sender: TObject);
+procedure TfmMain.btnLoadAndApplySettingsClick(Sender: TObject);
 var
 	T: TIniFile;
 	LPPI, LNewPPI: Integer;
 begin
-	{ We are using fmMain, instead of Application.MainForm, because last one not assigned yet. PPI at Startup }
 	LPPI := fmMain.PixelsPerInch;
-	{ Set Original value, this is important }
-	ScaleHelper.PPI := LPPI;
-
 	{ Load form property from INI file }
 	T := TIniFile.Create(GetCurrentDir + PathDelim + 'test.ini');
 	try
@@ -93,6 +83,23 @@ begin
 	{ PPI changed? }
 	if LPPI <> LNewPPI then
 		ScaleHelper.PPI := LNewPPI;
+end;
+
+procedure TfmMain.btnApplyClick(Sender: TObject);
+begin
+	if TrackBar2.Position = ScaleHelper.PPI then
+		Exit;
+
+	ScaleHelper.PPI := TrackBar2.Position;
+end;
+
+procedure TfmMain.FormCreate(Sender: TObject);
+begin
+	{ We are using fmMain, instead of Application.MainForm, because last one not assigned yet. PPI at Startup }
+	{ Set Original value, this is important }
+	ScaleHelper.PPI := fmMain.PixelsPerInch;
+
+	TrackBar2.Position := ScaleHelper.PPI;
 end;
 
 

@@ -18,7 +18,7 @@ type
 implementation
 
 uses
-  Vcl.Forms;
+  Vcl.Forms, System.SysUtils;
 
 { ScaleFunctions }
 
@@ -26,12 +26,19 @@ class procedure ScaleHelper.SetPPI(Value: Integer);
 var
 	LCycle: Integer;
 begin
+	if FPPI = 0 then
+		begin
+			if FPPI = Value then
+				raise Exception.Create('Not properly initialized')
+			else
+				FPPI := Value;
+		end;
+
 	if Application.MainForm <> nil then
 		if Application.MainForm.PixelsPerInch <> Value then
 			Application.MainForm.PixelsPerInch := Value;
 	for LCycle := 0 to Screen.FormCount - 1  do
-		if Screen.Forms[LCycle].PixelsPerInch <> Value then
-			Screen.Forms[LCycle].ScaleBy(Value, Value);
+		Screen.Forms[LCycle].ScaleBy(Value, FPPI);
 	FPPI := Value;
 end;
 

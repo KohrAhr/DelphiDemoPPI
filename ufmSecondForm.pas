@@ -19,7 +19,6 @@ type
     Label2: TLabel;
     Label1: TLabel;
     frmTest1: TfrmTest;
-    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -32,11 +31,5 @@ var
 implementation
 
 {$R *.dfm}
-
-procedure TfmSecondForm.FormCreate(Sender: TObject);
-begin
-	{ The only reason why we have it -- 2nd window created after ApplyScale execution :) but this is different problem :) }
-
-end;
 
 end.
